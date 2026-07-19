@@ -97,6 +97,8 @@ initDB();
 app.use("/api/groups", writeLimiter, groupsRouter);
 app.use("/api/groups", writeLimiter, membersRouter);
 app.use("/api/expenses", writeLimiter, expensesRouter);
+// Also mount at /api so GET /api/groups/:id/expenses resolves correctly
+app.use("/api", expensesRouter);
 app.use("/api/groups", balancesRouter);
 app.use("/api/groups", scenariosRouter);
 app.use("/api/groups", reportsRouter);
