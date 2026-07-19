@@ -69,7 +69,7 @@ router.get("/:id/balances", (req, res, next) => {
       };
     });
 
-    // Settlement suggestions
+    // Settlement suggestions (minimum transactions to settle debts)
     const debtors = balances.filter((b) => b.net_balance < 0).sort((a, b) => a.net_balance - b.net_balance);
     const creditors = balances.filter((b) => b.net_balance > 0).sort((a, b) => b.net_balance - a.net_balance);
 
@@ -77,9 +77,10 @@ router.get("/:id/balances", (req, res, next) => {
     let di = 0,
       ci = 0;
     while (di < debtors.length && ci < creditors.length) {
-      const debt = Math.abs(debtors[di].net_balance);
-      const credit = creditors[ci].net_balance;
-      const amount = Math.min(debt, credit);
+      const dBal = debtors[di].net_balance;
+      const cBal = creditors[ci].net_balance;
+      const amount = Math.min(Math.abs(dBal), cBal);
+
       if (amount > 1) {
         suggestions.push({
           from: debtors[di].name,
@@ -89,14 +90,12 @@ router.get("/:id/balances", (req, res, next) => {
           amount: Math.round(amount * 100) / 100,
         });
       }
-      if (debt <= credit) {
-        creditors[ci].net_balance -= debt;
-        di++;
-      }
-      if (credit <= debt) {
-        debtors[di].net_balance += credit;
-        ci++;
-      }
+
+      debtors[di].net_balance += amount;
+      creditors[ci].net_balance -= amount;
+
+      if (Math.abs(debtors[di].net_balance) < 0.01) di++;
+      if (Math.abs(creditors[ci].net_balance) < 0.01) ci++;
     }
 
     res.json({
