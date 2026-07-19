@@ -86,6 +86,7 @@ const writeLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Slow down! Max 20 writes per minute 🙏" },
+  skip: (req) => req.method === "GET",
 });
 
 app.use(globalLimiter);
