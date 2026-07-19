@@ -17,7 +17,7 @@ services:
       - key: PORT
         value: "10000"
       - key: FRONTEND_URL
-        value: https://balanceboard.netlify.app
+        value: https://balance-board.netlify.app
       - key: DATABASE_URL
         sync: false
     domains:
