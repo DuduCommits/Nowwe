@@ -143,12 +143,12 @@ export default function AppLayout({ children }) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 md:pt-0 pt-[60px] pb-[72px] md:pb-0 min-h-screen overflow-auto">
+      <main className="flex-1 md:pt-0 pt-[60px] pb-[80px] md:pb-0 min-h-screen overflow-auto" style={{ paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))' }}>
         <div className="max-w-4xl mx-auto px-4 py-6">{children}</div>
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-surface/90 backdrop-blur-md border-t border-border safe-area-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-surface/90 backdrop-blur-md border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <div className="flex items-center justify-around py-2">
           {navItems.slice(0, 5).map((item, idx) => {
             const basePath = `/group/${code}`;

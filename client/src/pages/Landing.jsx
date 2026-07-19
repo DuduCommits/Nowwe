@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -28,6 +28,13 @@ export default function Landing() {
     if (!joinCode.trim()) return;
     navigate(`/join/${joinCode.trim().toUpperCase()}`);
   };
+
+  // Auto-submit when 6 chars entered
+  useEffect(() => {
+    if (joinCode.length === 6) {
+      navigate(`/join/${joinCode}`);
+    }
+  }, [joinCode, navigate]);
 
   return (
     <div className="min-h-screen bg-background">

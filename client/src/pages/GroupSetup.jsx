@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { createGroup } from "../api/client";
 import { useGroup } from "../App";
+import { useToast } from "../components/Toast";
 import AddCategoryModal from "../components/AddCategoryModal";
 
 const EMOJIS = ["😊", "🦊", "🐱", "🐼", "🐸", "🐙", "🦄", "🌈"];
@@ -45,6 +46,7 @@ export default function GroupSetup() {
   const [error, setError] = useState("");
   const [createdGroup, setCreatedGroup] = useState(null);
   const [copied, setCopied] = useState(false);
+  const addToast = useToast();
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
@@ -82,8 +84,10 @@ export default function GroupSetup() {
       const groupData = await groupRes.json();
       setCreatedGroup({ ...groupData.data, code: res.data.code });
       setCurrentGroup(groupData.data);
+      addToast("Group created! Share the code 🎉", "success");
     } catch (err) {
       setError(err.message || "Failed to create group.");
+      addToast("Something went wrong. Try again.", "error");
     } finally { setCreating(false); }
   };
 

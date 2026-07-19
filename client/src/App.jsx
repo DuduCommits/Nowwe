@@ -13,6 +13,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const ScenarioPlanner = lazy(() => import("./pages/ScenarioPlanner"));
 const FairnessReport = lazy(() => import("./pages/FairnessReport"));
 const Settings = lazy(() => import("./pages/Settings"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export const GroupContext = createContext();
 
@@ -113,7 +114,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </GroupContext.Provider>
