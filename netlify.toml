@@ -1,6 +1,6 @@
 [build]
   # The build happens from the repo root, commands run there
-  command = "cd client && npm ci && npm run build"
+  command = "cd client && bun install && bun run build"
   publish = "client/dist"
 
 # ── SPA routing: all non-file, non-API paths → index.html ─────
