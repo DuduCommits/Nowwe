@@ -1,12 +1,15 @@
+# ── BalanceBoard Backend Web Service ────────────────────────────
+# The frontend is deployed separately via Netlify (see netlify.toml)
+# Update FRONTEND_URL after the Netlify site is live.
+
 services:
-  # ── Backend Web Service ──────────────────────────────────────────
   - type: web
     name: balanceboard-api
     env: node
     region: ohio
     plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -14,21 +17,8 @@ services:
       - key: PORT
         value: "10000"
       - key: FRONTEND_URL
-        value: https://balanceboard.onrender.com  # Will be updated after frontend deploy
+        value: https://balanceboard.netlify.app
       - key: DATABASE_URL
-        sync: false  # Set this manually in Render dashboard after creating DB
+        sync: false
     domains:
       - balanceboard-api.onrender.com
-
-  # ── Frontend Static Site ─────────────────────────────────────────
-  - type: static
-    name: balanceboard
-    env: static
-    region: ohio
-    buildCommand: cd client && npm install && npm run build
-    staticPublishPath: ./client/dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://balanceboard-api.onrender.com
-    domains:
-      - balanceboard.onrender.com
