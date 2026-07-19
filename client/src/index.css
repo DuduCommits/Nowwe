@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background:        #EBFADB;
+    --foreground:        #293E33;
+    --surface:           #FFFFFF;
+    --primary:           #105D5E;
+    --primary-hover:     #0D4A4B;
+    --primary-foreground: #EBFADB;
+    --success:           #009A6E;
+    --success-foreground: #FFFFFF;
+    --highlight:         #B3EDA9;
+    --highlight-foreground: #293E33;
+    --muted:             #C2CBC9;
+    --muted-foreground:  #767F7D;
+    --accent:            #E8E300;
+    --accent-foreground: #293E33;
+    --text-dark:         #293E33;
+    --text-muted:        #767F7D;
+    --border:            #C2CBC9;
+    --ring:              #105D5E;
+    --radius:            0.75rem;
+  }
+
+  body {
+    @apply bg-background font-body text-foreground antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-foreground;
+  }
+
+  .mono-num {
+    font-variant-numeric: tabular-nums;
+    @apply font-mono;
+  }
+}
+
+@layer utilities {
+  .bg-background         { background-color: var(--background); }
+  .bg-foreground         { background-color: var(--foreground); }
+  .bg-surface            { background-color: var(--surface); }
+  .bg-primary            { background-color: var(--primary); }
+  .bg-success            { background-color: var(--success); }
+  .bg-highlight          { background-color: var(--highlight); }
+  .bg-muted              { background-color: var(--muted); }
+  .bg-accent             { background-color: var(--accent); }
+  .bg-border             { background-color: var(--border); }
+
+  .text-background       { color: var(--background); }
+  .text-foreground       { color: var(--foreground); }
+  .text-surface          { color: var(--surface); }
+  .text-primary          { color: var(--primary); }
+  .text-success          { color: var(--success); }
+  .text-highlight        { color: var(--highlight); }
+  .text-text-dark        { color: var(--text-dark); }
+  .text-text-muted       { color: var(--text-muted); }
+  .text-accent           { color: var(--accent); }
+
+  .border-border         { border-color: var(--border); }
+  .ring-ring             { --tw-ring-color: var(--ring); }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface rounded-xl border border-border p-5;
+    box-shadow: 0 2px 12px rgba(41, 62, 51, 0.08);
+  }
+
+  .card-hover {
+    @apply card transition-all duration-200 hover:shadow-[0_4px_20px_rgba(41,62,51,0.12)];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl
+           bg-primary text-background font-semibold text-sm
+           transition-all duration-200
+           hover:brightness-90 active:scale-[0.97]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl
+           bg-highlight text-text-dark font-semibold text-sm
+           transition-all duration-200
+           hover:bg-success hover:text-surface active:scale-[0.97]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl
+           border border-border text-text-dark font-medium text-sm
+           transition-all duration-200
+           hover:bg-background active:scale-[0.97];
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-xl border border-border bg-surface text-sm text-text-dark
+           transition-all duration-200
+           placeholder:text-text-muted
+           focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary;
+  }
+
+  .badge-positive {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-success text-surface text-xs font-medium;
+  }
+
+  .badge-negative {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-border text-text-dark text-xs font-medium;
+  }
+
+  .badge-neutral {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-highlight text-text-dark text-xs font-medium;
+  }
+
+  .badge-alert {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent text-text-dark text-xs font-medium;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-border bg-opacity-50 rounded-lg;
+  }
+}

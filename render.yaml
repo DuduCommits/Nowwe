@@ -1,0 +1,34 @@
+services:
+  # ── Backend Web Service ──────────────────────────────────────────
+  - type: web
+    name: balanceboard-api
+    env: node
+    region: ohio
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: FRONTEND_URL
+        value: https://balanceboard.onrender.com  # Will be updated after frontend deploy
+      - key: DATABASE_URL
+        sync: false  # Set this manually in Render dashboard after creating DB
+    domains:
+      - balanceboard-api.onrender.com
+
+  # ── Frontend Static Site ─────────────────────────────────────────
+  - type: static
+    name: balanceboard
+    env: static
+    region: ohio
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://balanceboard-api.onrender.com
+    domains:
+      - balanceboard.onrender.com
