@@ -1,14 +1,18 @@
+import { lazy, Suspense, useState, useEffect, createContext, useContext } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect, createContext, useContext } from "react";
+
+// Eager load critical path pages
 import Landing from "./pages/Landing";
 import GroupSetup from "./pages/GroupSetup";
 import JoinGroup from "./pages/JoinGroup";
 import AppLayout from "./components/AppLayout";
-import ExpenseLogger from "./pages/ExpenseLogger";
-import Dashboard from "./pages/Dashboard";
-import ScenarioPlanner from "./pages/ScenarioPlanner";
-import FairnessReport from "./pages/FairnessReport";
-import Settings from "./pages/Settings";
+
+// Lazy load heavy pages
+const ExpenseLogger = lazy(() => import("./pages/ExpenseLogger"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const ScenarioPlanner = lazy(() => import("./pages/ScenarioPlanner"));
+const FairnessReport = lazy(() => import("./pages/FairnessReport"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 export const GroupContext = createContext();
 
@@ -25,6 +29,22 @@ function getStoredGroup() {
   }
 }
 
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-sm text-text-muted">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const { currentGroup } = useContext(GroupContext);
+  return currentGroup ? children : <Navigate to="/" replace />;
+}
+
 export default function App() {
   const [currentGroup, setCurrentGroup] = useState(getStoredGroup);
 
@@ -38,72 +58,64 @@ export default function App() {
 
   return (
     <GroupContext.Provider value={{ currentGroup, setCurrentGroup }}>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/setup" element={<GroupSetup />} />
-        <Route path="/join/:code" element={<JoinGroup />} />
-        <Route
-          path="/group/:code"
-          element={
-            currentGroup ? (
-              <AppLayout>
-                <ExpenseLogger />
-              </AppLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/group/:code/dashboard"
-          element={
-            currentGroup ? (
-              <AppLayout>
-                <Dashboard />
-              </AppLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/group/:code/scenarios"
-          element={
-            currentGroup ? (
-              <AppLayout>
-                <ScenarioPlanner />
-              </AppLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/group/:code/report"
-          element={
-            currentGroup ? (
-              <AppLayout>
-                <FairnessReport />
-              </AppLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/group/:code/settings"
-          element={
-            currentGroup ? (
-              <AppLayout>
-                <Settings />
-              </AppLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/setup" element={<GroupSetup />} />
+          <Route path="/join/:code" element={<JoinGroup />} />
+          <Route
+            path="/group/:code"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <ExpenseLogger />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/group/:code/dashboard"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/group/:code/scenarios"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <ScenarioPlanner />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/group/:code/report"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <FairnessReport />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/group/:code/settings"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Settings />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </GroupContext.Provider>
   );
 }
